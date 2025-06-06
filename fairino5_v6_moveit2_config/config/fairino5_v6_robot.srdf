@@ -18,6 +18,13 @@
         <joint name="j6"/>
         <chain base_link="base_link" tip_link="wrist3_link"/>
     </group>
+    
+    <!--GRIPPER GROUP: Define the gripper as a separate planning group-->
+    <group name="gripper">
+        <joint name="left_finger_joint"/>
+        <joint name="right_finger_joint"/>
+    </group>
+    
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="pos1" group="fairino5_v6_group">
         <joint name="j1" value="2.1093"/>
@@ -35,6 +42,15 @@
         <joint name="j5" value="-1.5018"/>
         <joint name="j6" value="0"/>
     </group_state>
+    
+    <!--GRIPPER STATES: Define useful gripper positions-->
+    <group_state name="open" group="gripper">
+        <joint name="left_finger_joint" value="0.0"/>
+    </group_state>
+    <group_state name="closed" group="gripper">
+        <joint name="left_finger_joint" value="-0.015"/>
+    </group_state>
+    
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="base_link" link2="shoulder_link" reason="Adjacent"/>
     <disable_collisions link1="base_link" link2="upperarm_link" reason="Never"/>
@@ -47,4 +63,12 @@
     <disable_collisions link1="wrist1_link" link2="wrist2_link" reason="Adjacent"/>
     <disable_collisions link1="wrist1_link" link2="wrist3_link" reason="Never"/>
     <disable_collisions link1="wrist2_link" link2="wrist3_link" reason="Adjacent"/>
+    
+    <!--GRIPPER COLLISION DISABLES-->
+    <disable_collisions link1="gripper_base_link" link2="wrist3_link" reason="Adjacent"/>
+    <disable_collisions link1="left_finger" link2="right_finger" reason="Never"/>
+    <disable_collisions link1="left_finger" link2="gripper_base_link" reason="Adjacent"/>
+    <disable_collisions link1="right_finger" link2="gripper_base_link" reason="Adjacent"/>
+    <disable_collisions link1="left_finger" link2="wrist3_link" reason="Never"/>
+    <disable_collisions link1="right_finger" link2="wrist3_link" reason="Never"/>
 </robot>

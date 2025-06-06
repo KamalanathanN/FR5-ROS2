@@ -4,6 +4,17 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
   name="fairino5_v6_robot">
+  <!-- Materials -->
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0 0 1"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+  
   <link
     name="base_link">
     <inertial>
@@ -351,7 +362,7 @@
       </material>
     </visual>
     <collision>
-      <origins
+      <origin
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
@@ -458,4 +469,107 @@
       k_position="15"
       k_velocity="10" />
   </joint>
+
+  <!-- Gripper Integration -->
+  <!-- Base link -->
+  <link name="gripper_base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/gripper_base_n.stl" />
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/gripper_base_n.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Left finger  -->
+  <link name="left_finger">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/left_grip.stl" 
+          scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/left_grip.stl" 
+          scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- Right finger -->
+  <link name="right_finger">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/right_grip.stl" 
+          scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://fairino_description/meshes/fairino5_v6/right_grip.stl" 
+          scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- Joint connecting wrist3_link to gripper_base_link -->
+  <joint name="gripper_joint" type="fixed">
+    <parent link="wrist3_link"/>
+    <child link="gripper_base_link"/>
+    <origin xyz="0 0 0.08" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Left finger joint (primary joint) -->
+  <joint name="left_finger_joint" type="prismatic">
+    <parent link="gripper_base_link"/>
+    <child link="left_finger"/>
+    <origin xyz="-0.016 0.009 0.10225" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0.0" upper="0.01825" effort="50" velocity="1.0"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
+  <!-- Right finger joint (mimic joint) -->
+  <joint name="right_finger_joint" type="prismatic">
+    <parent link="gripper_base_link"/>
+    <child link="right_finger"/>
+    <origin xyz="0.016 -0.009 0.10225" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="0.0" upper="0.01825" effort="50" velocity="1.0"/>
+    <mimic joint="left_finger_joint"/>
+    <dynamics damping="0.3"/>
+  </joint>
+
 </robot>

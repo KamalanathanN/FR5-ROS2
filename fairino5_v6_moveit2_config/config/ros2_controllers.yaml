@@ -6,6 +6,8 @@ controller_manager:
     fairino5_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -23,3 +25,13 @@ fairino5_controller:
       - position
     state_interfaces:
       - position
+
+gripper_controller:
+  ros__parameters:
+    joints:
+      - left_finger_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
